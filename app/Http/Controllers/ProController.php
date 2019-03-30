@@ -187,7 +187,10 @@ class ProController extends Controller
         return view('mysy',compact('grows'));
     }
 
-
+    /**
+     *
+     * 生成验证码
+     */
     public function captcha()
     {
         $builder = new CaptchaBuilder;//实例化
@@ -196,6 +199,27 @@ class ProController extends Controller
         //Session::put('img_code',strtoupper( $builder->getPhrase()));//把值存到session中
         header('Content-type: image/jpeg');
         $builder->output();//输出到模板
+    }
+
+
+    /**
+     * 支付
+     */
+    public function pay()
+    {
+        $row = [];
+        //v_amount v_moneytype v_oid v_mid v_url key
+        $row['v_amount'] = '25.67';
+        $row['v_moneytype'] = 'CNY';
+        $row['v_oid'] = '2016254523';
+        $row['v_mid'] = '1009004';
+        $row['v_url'] = 'http://xxx.com';
+        $row['key'] = '48905ldc%^&(*slslUT';
+
+        $row['v_md5info'] = strtoupper(md5(implode('',$row)));
+
+        return view('pay',$row);
+
     }
 
 

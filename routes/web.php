@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function (){
 
     //验证码
     Route::get('captcha','ProController@captcha');
+
+    //支付
+    Route::get('pay','ProController@pay');
 });
 
 
