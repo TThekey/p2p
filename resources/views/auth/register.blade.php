@@ -19,7 +19,7 @@
 			<div class="fl">
 		    	<a href="#"><img height="52" style="vertical-align: initial;" alt="点点贷" src="/image/logo_all.png"></a><span>注册</span>
 		    </div>
-		    <div class="fr"><span class="fc_6">已有帐号？<a class="blue" href="#">立即登录</a></span></div>
+		    <div class="fr"><span class="fc_6">已有帐号？<a class="blue" href="{{ url('login') }}">立即登录</a></span></div>
 		</div>
 		<div id="reglogin" class="nwd-banner">
 			<div class="nwd_loginPos">

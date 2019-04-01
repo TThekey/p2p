@@ -43,6 +43,9 @@ class ProController extends Controller
 //        ]
 
 
+
+
+
         $user = Auth::user();
         //开启事务
         DB::beginTransaction();
@@ -219,6 +222,73 @@ class ProController extends Controller
         $row['v_md5info'] = strtoupper(md5(implode('',$row)));
 
         return view('pay',$row);
+
+    }
+
+
+    /**
+     * 短信验证码
+     * @param $m
+     *
+     */
+    public function mess($m)
+    {
+        header("Content-Type:text/html;charset=utf-8");
+        $apikey = "38a1ab10262cadc4164f0bbe648b0ca7";
+        $mobile = $m;
+        $rand = mt_rand(1000,9999);
+        //将随机生成的验证码放入session
+        session(['messcode'=> $rand]);
+
+        $text="【云片网】您的验证码是".$rand;
+        $ch = curl_init();
+
+        /* 设置验证方式 */
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:text/plain;charset=utf-8',
+            'Content-Type:application/x-www-form-urlencoded', 'charset=utf-8'));
+        /* 设置返回结果为流 */
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        /* 设置超时时间*/
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+        /* 设置通信方式 */
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+
+        // 发送短信
+        $data=array('text'=>$text,'apikey'=>$apikey,'mobile'=>$mobile);
+        $json_data = $this->send($ch,$data);
+        return $json_data;
+
+        curl_close($ch);
+    }
+
+    public function send($ch,$data){
+        curl_setopt ($ch, CURLOPT_URL, 'https://sms.yunpian.com/v2/sms/single_send.json');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        $result = curl_exec($ch);
+        $error = curl_error($ch);
+        $this->checkErr($result,$error);
+        return $result;
+    }
+
+    public function checkErr($result,$error) {
+        if($result === false)
+        {
+            echo 'Curl error: ' . $error;
+        }
+        else
+        {
+            //echo '操作完成没有任何错误';
+        }
+    }
+
+    public function checkmess()
+    {
+        return session('messcode');
+
 
     }
 

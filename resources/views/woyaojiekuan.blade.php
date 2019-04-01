@@ -128,6 +128,14 @@
                 <p style="display: block;" id="amountError" class="error">{{ $errors->first('money') }}</p>
                 @endif
             </div>
+
+            <div class="iptBox">
+                <span>手机号码</span>
+                <input id="mobile" name="moblie" maxlength="11" placeholder="请输入手机号码" type="text" value="">
+                @if($errors->has('mobile'))
+                    <p style="display: block;" id="mobileError" class="error">{{ $errors->first('mobile') }}</p>
+                @endif
+            </div>
             <div class="iptBox">
                 <span class="message">图形验证码</span>
                 <input class="short" name="imgcode" id="imgcode" placeholder="请输入图形验证码" type="text">
@@ -139,7 +147,7 @@
             <div class="iptBox">
                 <span class="message">短信验证码</span>
                 <input class="short" name="verify" id="fucode" placeholder="请输入短信验证码" type="text">
-                <i><a href="javascript:;" class="get-code" id="dtmbtn" name="dtmbtn" onclick="putyzm()">获取验证码</a></i>
+                <i><button type="button" class="get-code" id="dtmbtn" name="dtmbtn">获取验证码</button></i>
             </div>
             <input class="applyBtn" value="立即申请" id="save" type="submit">
         </div>
@@ -313,7 +321,7 @@
 </body>
 <script type="text/javascript" src="http://www.jq22.com/jquery/jquery-3.3.1.js"></script>
 <script type="text/javascript">
-    // $("#applyForm").submit(function (event) {
+     $("#applyForm").submit(function (event) {
     //
     //     if($("#age").val() == 0){
     //         alert("请选择年龄");
@@ -331,10 +339,67 @@
         //     alert("手机号不正确");
         //     return false;
         // }
-    //})
 
+         //匹配手机验证码（同步请求）
+         var messcode;
+         $.ajax({
+             url : "/checkmess",
+             type : "get",
+             async : false,
+             success : function (msg) {
+                 messcode = msg;
+                 if(messcode != $('#fucode').val()){
+                     alert("手机验证码不正确");
+                     return false;
+                 }
+             }
+         });
+    })
+    //每次点击修改图形验证码
     $("#imgc").click(function (event) {
         this.src = this.src + '?';
+    })
+
+
+    //发送手机验证码
+    $("#dtmbtn").click(function (event) {
+        var mobile = $("#mobile").val();
+        if(!/1[3578]\d{9}/.test(mobile)){
+            alert("手机号不正确");
+            return false;
+        }
+
+        //十秒内不允许再次点击
+        this.disabled = true;
+        var btn = this;
+        var sec = 10;
+        var clock = null;
+
+        clock = setInterval(function () {
+            --sec;
+            if(sec >= 0){
+                btn.innerHTML = sec;
+            }else{
+                btn.innerHTML = "获取验证码";
+                btn.disabled = false;
+                clearInterval(clock);
+            }
+
+        },1000)
+
+
+
+
+
+
+        $.get("/mess/"+mobile,function (msg) {
+            console.log(msg);
+        })
+
+
+
+
+        return false;
     })
 
 

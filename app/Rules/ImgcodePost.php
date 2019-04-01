@@ -36,6 +36,6 @@ class ImgcodePost implements Rule
      */
     public function message()
     {
-        return '验证码不正确';
+        return '图形验证码不正确';
     }
 }

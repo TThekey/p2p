@@ -55,11 +55,15 @@ Route::middleware('auth')->group(function (){
     Route::get('mysy','ProController@mysy');
     Route::get('mytz','ProController@mytz');
 
-    //验证码
+    //图形验证码
     Route::get('captcha','ProController@captcha');
 
     //支付
     Route::get('pay','ProController@pay');
+
+    //短信验证码
+    Route::get('mess/{m}','ProController@mess');
+    Route::get('checkmess','ProController@checkmess');
 });
 
 
